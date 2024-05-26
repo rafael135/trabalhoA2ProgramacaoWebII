@@ -7,7 +7,11 @@ export default {
     "./node_modules/flowbite/**/*.js"
   ],
   theme: {
-    extend: {},
+    extend: {
+      backgroundImage: {
+        "home": "url('/resources/img/bg.png')"
+      }
+    },
   },
   plugins: [
     require("flowbite/plugin")
