@@ -1,0 +1,12 @@
+@layer components {
+    .authForm-container {
+        height: calc(100vh - 420px);
+        @apply flex justify-center items-center;
+    }
+
+
+
+    .authForm-container button {
+        @apply px-5 py-2 mt-1 text-white bg-blue-500 hover:bg-blue-600 w-full;
+    }
+}

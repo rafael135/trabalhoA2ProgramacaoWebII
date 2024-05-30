@@ -1,9 +1,18 @@
+@import url("auth.css");
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 body {
     background-color: #F6F7F8;
+}
+
+input.errored {
+    border-color: rgb(219, 9, 9);
+}
+input.errored::placeholder {
+    color: rgb(219, 9, 9);
 }
 
 ::-webkit-scrollbar {
