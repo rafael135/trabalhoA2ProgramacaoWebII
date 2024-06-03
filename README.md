@@ -4,7 +4,7 @@
 
 # O que é?
 
-Trabalho feito para a matéria "Programação Web II" com o intuito de colocar em prática os conceitos abordados em sala(POO, MVC, DAO e Sessões).
+Trabalho feito para a matéria "Programação Web II" com o intuito de colocar em prática os conceitos abordados em sala(POO, MVC, DAO, Sessões) e APIs para gráficos(Google Charts e Plotly.js).
 
 # Tecnologias utilizadas
 
