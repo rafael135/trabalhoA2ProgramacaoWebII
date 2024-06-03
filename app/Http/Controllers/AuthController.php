@@ -16,7 +16,8 @@ class AuthController extends Controller
         }
 
         return view("login", [
-            "errors" => $errors
+            "errors" => $errors,
+            "loggedUser" => null
         ]);
     }
 
@@ -29,7 +30,7 @@ class AuthController extends Controller
             ]);
         }
 
-        return redirect()->route("home.view");
+        return redirect()->route("homeView");
     }
 
     public function registerView(Request $request) {
@@ -39,7 +40,8 @@ class AuthController extends Controller
         }
         
         return view("register", [
-            "errors" => $errors
+            "errors" => $errors,
+            "loggedUser" => null
         ]);
     }
 

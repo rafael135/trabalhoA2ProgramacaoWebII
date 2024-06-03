@@ -15,6 +15,7 @@ class Lanche extends Model
         "name",
         "description",
         "price",
+        "quantity",
         "image_url",
     ];
 

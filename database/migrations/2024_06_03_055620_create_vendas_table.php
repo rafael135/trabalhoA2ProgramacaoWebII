@@ -11,14 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('lanches', function (Blueprint $table) {
+        Schema::create('vendas', function (Blueprint $table) {
             $table->id();
             $table->foreignId("user_id")->references("id")->on("users");
-            $table->string('name')->nullable(false);
-            $table->text("description")->nullable(false);
-            $table->float("price")->nullable(false);
-            $table->integer("quantity", false, true)->nullable(false);
-            $table->string("image_url", 255)->nullable(false);
+            $table->foreignId("lanche_id")->references("id")->on("lanches");
+            $table->unsignedInteger("quantity")->nullable(false);
+            $table->float("total_price")->nullable(false);
+            $table->timestamp("date")->nullable(false);
             $table->timestamps();
         });
     }
@@ -28,10 +27,11 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table("lanches", function (Blueprint $table) {
+        Schema::table("vendas", function (Blueprint $table) {
             $table->dropForeign("user_id");
+            $table->dropForeign("lanche_id");
         });
 
-        Schema::dropIfExists('lanches');
+        Schema::dropIfExists('vendas');
     }
 };

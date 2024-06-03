@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-class HomeController extends Controller
+class GraficoController extends Controller
 {
     public function index(Request $request) {
         $loggedUser = Auth::user();
@@ -14,11 +14,13 @@ class HomeController extends Controller
             return redirect()->route("loginView");
         }
 
-        $lanches = $loggedUser->lanches()->getModels();
+        $dados = collect();
 
-        return view("home", [
+        //TODO
+
+        return view("graficos", [
             "loggedUser" => $loggedUser,
-            "lanches" => $lanches
+            "dados" => $dados
         ]);
-    } 
+    }
 }
