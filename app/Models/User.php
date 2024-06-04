@@ -49,4 +49,8 @@ class User extends Authenticatable
     public function lanches(): HasMany {
         return $this->hasMany(Lanche::class);
     }
+
+    public function vendas(): HasMany {
+        return $this->hasMany(Venda::class);
+    }
 }

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Vite;
 
 class LancheController extends Controller
 {
@@ -116,6 +117,8 @@ class LancheController extends Controller
                 "status" => 404
             ], 404);
         }
+
+        $lanche->image_url = Vite::asset("storage/app/public/$lanche->image_url");
 
         return response()->json([
             "lanche" => $lanche,
@@ -250,6 +253,8 @@ class LancheController extends Controller
             "quantity" => $quantity,
             "image_url" => $image_url
         ]);
+
+        $lanche->image_url = Vite::asset("storage/app/public/$lanche->image_url");
 
         return response()->json([
             "lanche" => $lanche,

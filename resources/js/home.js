@@ -28,6 +28,13 @@ const editLancheQuantityInput = editLancheModal.querySelector("input#quantity");
 const editLancheDescriptionInput = editLancheModal.querySelector("textarea#description");
 const editLancheImageInput = editLancheModal.querySelector("input#image");
 const editLancheImageView = editLancheModal.querySelector("img#imageView");
+const simulateVendaModal = document.querySelector("div#simulateVendaModal");
+const simulateVendaLoadingStatus = simulateVendaModal.querySelector("div#loadingStatus");
+const formSimulateVenda = simulateVendaModal.querySelector("form#formSimulateVenda");
+const simulateQuantityInput = formSimulateVenda.querySelector("input#quantity");
+const simulateDateInput = formSimulateVenda.querySelector("input#date");
+const editLancheModalBtn = editLancheModal.querySelector("button#editLancheModalBtn");
+const simulateVendaModalBtn = simulateVendaModal.querySelector("button#simulateVendaModalBtn");
 let selectedLancheId = null;
 let selectedLanche = null;
 function resetEditForm() {
@@ -44,6 +51,10 @@ function resetAddForm() {
     addLancheQuantityInput.value = "";
     addLancheImageView.src = "";
 }
+function resetSimulateVendaForm() {
+    simulateQuantityInput.value = "0";
+    simulateDateInput.value = "";
+}
 const toggleUpdateLoadingStatus = (loading) => {
     if (loading == true) {
         editLancheLoadingStatus.style.display = "flex";
@@ -51,6 +62,18 @@ const toggleUpdateLoadingStatus = (loading) => {
     else {
         editLancheLoadingStatus.style.display = "none";
     }
+};
+const toggleSimulateLoadingStatus = (loading) => {
+    if (loading == true) {
+        simulateVendaLoadingStatus.style.display = "flex";
+    }
+    else {
+        simulateVendaLoadingStatus.style.display = "none";
+    }
+};
+const resetSelectedLanche = () => {
+    selectedLancheId = null;
+    selectedLanche = null;
 };
 addLancheImageInput.addEventListener("change", (e) => __awaiter(void 0, void 0, void 0, function* () {
     if (addLancheImageInput.files == null || addLancheImageInput.files.length == 0) {
@@ -111,9 +134,40 @@ formEditLanche.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 
         selectedLancheName.textContent = res.lanche.name;
         selectedLancheDescription.textContent = res.lanche.description;
         selectedLanchePrice.textContent = `R$ ${res.lanche.price.toString()}`;
-        selectedLancheImage.src = `http://[::1]:5173/storage/app/public/${res.lanche.image_url}`;
+        selectedLancheImage.src = res.lanche.image_url;
     }
     toggleUpdateLoadingStatus(false);
+    resetSelectedLanche();
+    editLancheModalBtn.click();
+}));
+formSimulateVenda.addEventListener("submit", (e) => __awaiter(void 0, void 0, void 0, function* () {
+    e.preventDefault();
+    if (selectedLancheId == null) {
+        return;
+    }
+    toggleSimulateLoadingStatus(true);
+    let quantity = Number.parseInt(simulateQuantityInput.value);
+    let date = simulateDateInput.value;
+    let req = yield fetch(route("api.createVenda"), {
+        method: "POST",
+        body: JSON.stringify({
+            lanche_id: selectedLancheId,
+            quantity: quantity,
+            date: date
+        }),
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: rememberToken.value
+        },
+        credentials: "omit"
+    });
+    let res = yield req.json();
+    if (res.status == 201) {
+        simulateVendaModalBtn.click();
+    }
+    toggleSimulateLoadingStatus(false);
+    resetSelectedLanche();
 }));
 function getLanche() {
     return __awaiter(this, void 0, void 0, function* () {
@@ -131,7 +185,7 @@ function getLanche() {
             editLancheDescriptionInput.value = res.lanche.description;
             editLanchePriceInput.value = res.lanche.price.toFixed(2);
             editLancheQuantityInput.value = res.lanche.quantity.toString();
-            editLancheImageView.src = `http://[::1]:5173/storage/app/public/${res.lanche.image_url}`;
+            editLancheImageView.src = res.lanche.image_url;
         }
         toggleUpdateLoadingStatus(false);
     });
@@ -141,6 +195,10 @@ function selectLancheUpdate(btn) {
     selectedLanche = document.querySelector(`div.lanche[data-id='${selectedLancheId}']`);
     resetEditForm();
     getLanche();
+}
+function selectLancheSimulateVenda(btn) {
+    selectedLancheId = Number.parseInt(btn.getAttribute("data-id"));
+    resetSimulateVendaForm();
 }
 function selectLancheDelete(btn) {
     selectedLancheId = Number.parseInt(btn.getAttribute("data-id"));

@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('lanches', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->references("id")->on("users");
+            $table->foreignId("user_id")->references("id")->on("users")->cascadeOnDelete();
             $table->string('name')->nullable(false);
             $table->text("description")->nullable(false);
             $table->float("price")->nullable(false);

@@ -43,6 +43,17 @@ const editLancheDescriptionInput = editLancheModal.querySelector("textarea#descr
 const editLancheImageInput = editLancheModal.querySelector("input#image") as HTMLInputElement;
 const editLancheImageView = editLancheModal.querySelector("img#imageView") as HTMLImageElement;
 
+
+const simulateVendaModal = document.querySelector("div#simulateVendaModal") as HTMLDivElement;
+const simulateVendaLoadingStatus = simulateVendaModal.querySelector("div#loadingStatus") as HTMLDivElement;
+
+const formSimulateVenda = simulateVendaModal.querySelector("form#formSimulateVenda") as HTMLFormElement;
+const simulateQuantityInput = formSimulateVenda.querySelector("input#quantity") as HTMLInputElement;
+const simulateDateInput = formSimulateVenda.querySelector("input#date") as HTMLInputElement;
+
+const editLancheModalBtn = editLancheModal.querySelector("button#editLancheModalBtn") as HTMLButtonElement;
+const simulateVendaModalBtn = simulateVendaModal.querySelector("button#simulateVendaModalBtn") as HTMLButtonElement;
+
 let selectedLancheId: null | number = null;
 let selectedLanche: null | HTMLDivElement = null;
 
@@ -62,12 +73,31 @@ function resetAddForm() {
     addLancheImageView.src = "";
 }
 
+function resetSimulateVendaForm() {
+    simulateQuantityInput.value = "0";
+    simulateDateInput.value = "";
+}
+
+
 const toggleUpdateLoadingStatus = (loading: boolean) => {
     if(loading == true) {
         editLancheLoadingStatus.style.display = "flex";
     } else {
         editLancheLoadingStatus.style.display = "none";
     }
+}
+
+const toggleSimulateLoadingStatus = (loading: boolean) => {
+    if(loading == true) {
+        simulateVendaLoadingStatus.style.display = "flex";
+    } else {
+        simulateVendaLoadingStatus.style.display = "none";
+    }
+}
+
+const resetSelectedLanche = () => {
+    selectedLancheId = null;
+    selectedLanche = null;
 }
 
 
@@ -158,14 +188,58 @@ formEditLanche.addEventListener("submit", async (e) => {
         selectedLancheName.textContent = res.lanche.name;
         selectedLancheDescription.textContent = res.lanche.description;
         selectedLanchePrice.textContent = `R$ ${res.lanche.price.toString()}`;
-        selectedLancheImage.src = `http://[::1]:5173/storage/app/public/${res.lanche.image_url}`;
+        selectedLancheImage.src = res.lanche.image_url;
     }
 
     toggleUpdateLoadingStatus(false);
+    resetSelectedLanche();
+    editLancheModalBtn.click();
 
 });
 
-type GetLancheResult = {
+type SimulateVendaResponse = {
+    status: number;
+}
+
+formSimulateVenda.addEventListener("submit", async (e) => {
+    e.preventDefault();
+
+    if(selectedLancheId == null) {
+        return;
+    }
+
+    toggleSimulateLoadingStatus(true);
+
+    let quantity = Number.parseInt(simulateQuantityInput.value);
+    let date = simulateDateInput.value;
+
+    // @ts-expect-error
+    let req = await fetch(route("api.createVenda"), {
+        method: "POST",
+        body: JSON.stringify({
+            lanche_id: selectedLancheId,
+            quantity: quantity,
+            date: date
+        }),
+        headers: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+            Authorization: rememberToken.value
+        },
+        credentials: "omit"
+    });
+
+    let res: SimulateVendaResponse = await req.json();
+
+    if(res.status == 201) {
+        simulateVendaModalBtn.click();
+    }
+
+    toggleSimulateLoadingStatus(false);
+    resetSelectedLanche();
+})
+
+type GetLancheResponse = {
     lanche: Lanche;
     status: number;
 };
@@ -182,14 +256,14 @@ async function getLanche() {
         credentials: "omit"
     });
 
-    let res: GetLancheResult = await req.json();
+    let res: GetLancheResponse = await req.json();
 
     if(res.status == 200) {
         editLancheNameInput.value = res.lanche.name;
         editLancheDescriptionInput.value = res.lanche.description;
         editLanchePriceInput.value = res.lanche.price.toFixed(2);
         editLancheQuantityInput.value = res.lanche.quantity.toString();
-        editLancheImageView.src = `http://[::1]:5173/storage/app/public/${res.lanche.image_url}`;
+        editLancheImageView.src = res.lanche.image_url;
     }
 
     toggleUpdateLoadingStatus(false);
@@ -201,6 +275,12 @@ function selectLancheUpdate(btn: HTMLButtonElement) {
     resetEditForm();
 
     getLanche();
+}
+
+function selectLancheSimulateVenda(btn: HTMLButtonElement) {
+    selectedLancheId = Number.parseInt(btn.getAttribute("data-id")!);
+    
+    resetSimulateVendaForm();
 }
 
 function selectLancheDelete(btn: HTMLButtonElement) {

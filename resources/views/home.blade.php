@@ -15,13 +15,14 @@
 
     <x-deleteLancheModal />
     <x-editLancheModal />
+    <x-simulateVendaModal />
 
     <!-- INPUTS PARA ADD -->
 
     <div class="flex justify-center items-center ">
         <div class="max-w-screen-lg mb-16 flex gap-2">
 
-            <button class="bg-blue-900 px-5 h-21 w-28 p-2 rounded text-white hover:bg-blue-950"
+            <button id="addLancheModalBtn" class="bg-blue-900 px-5 h-21 w-28 p-2 rounded text-white hover:bg-blue-950"
                 data-modal-target="addLancheModal" data-modal-toggle="addLancheModal" onclick="resetAddForm()">
                 Adicionar
             </button>
@@ -109,7 +110,10 @@
 
     <div id="menu">
 
-        <main class="grid grid-cols-1 md:grid-cols-2 gap-7 mx-auto max-w-screen-2xl px-2 mb-16">
+        <main class="@if(count($lanches) == 0) flex justify-center items-center @else grid grid-cols-1 md:grid-cols-2 @endif gap-7 mx-auto max-w-screen-2xl px-2 mb-16">
+            @if(count($lanches) == 0)
+                <h2 class="font-bold text-3xl text-slate-900">Nenhum lanche registrado!</h2>
+            @endif
 
             @foreach ($lanches as $lanche)
                 <x-lanche :id="$lanche->id" :name="$lanche->name" :description="$lanche->description" :price="$lanche->price" :imageUrl="$lanche->image_url" />

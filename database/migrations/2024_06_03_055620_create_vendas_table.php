@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('vendas', function (Blueprint $table) {
             $table->id();
-            $table->foreignId("user_id")->references("id")->on("users");
-            $table->foreignId("lanche_id")->references("id")->on("lanches");
+            $table->foreignId("user_id")->references("id")->on("users")->cascadeOnDelete();
+            $table->foreignId("lanche_id")->references("id")->on("lanches")->cascadeOnDelete();
             $table->unsignedInteger("quantity")->nullable(false);
             $table->float("total_price")->nullable(false);
             $table->timestamp("date")->nullable(false);
