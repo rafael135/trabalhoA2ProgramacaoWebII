@@ -36,7 +36,7 @@ Trabalho feito para a matéria "Programação Web II" com o intuito de colocar e
     ```
     
 2. Configurar seu banco de dados no arquivo ".env.example", e logo após, remover a extensão ".example"
-3. Criar um novo banco de dados com o nome "todoList"
+3. Criar um novo banco de dados com o nome "trabalhoa2"
 
 4. Executar as migrations do projeto:
 
